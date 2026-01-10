@@ -8,6 +8,7 @@ from typing import Any
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ATTR_COLOR_TEMP_KELVIN,
+    ATTR_EFFECT,
     ATTR_HS_COLOR,
     ATTR_TRANSITION,
     ColorMode,
@@ -34,13 +35,26 @@ async def async_setup_entry(
 ) -> None:
     """Set up LIFX Cloud lights from a config entry."""
     coordinator: LifxCloudCoordinator = hass.data[DOMAIN][entry.entry_id]
+    known_light_ids: set[str] = set()
 
-    entities = [
-        LifxCloudLight(coordinator, light_id)
-        for light_id in coordinator.data
-    ]
+    @callback
+    def _async_add_new_lights() -> None:
+        """Add any new lights that were discovered."""
+        new_entities: list[LifxCloudLight] = []
 
-    async_add_entities(entities)
+        for light_id in coordinator.data:
+            if light_id not in known_light_ids:
+                known_light_ids.add(light_id)
+                new_entities.append(LifxCloudLight(coordinator, light_id))
+
+        if new_entities:
+            async_add_entities(new_entities)
+
+    # Add initial lights
+    _async_add_new_lights()
+
+    # Listen for new lights on coordinator updates
+    entry.async_on_unload(coordinator.async_add_listener(_async_add_new_lights))
 
 
 class LifxCloudLight(CoordinatorEntity[LifxCloudCoordinator], LightEntity):
@@ -165,6 +179,26 @@ class LifxCloudLight(CoordinatorEntity[LifxCloudCoordinator], LightEntity):
         light = self._light
         if light is None:
             return
+
+        # Handle effect activation
+        if ATTR_EFFECT in kwargs:
+            effect = kwargs[ATTR_EFFECT]
+            if effect == "breathe":
+                await self.coordinator.api.breathe_effect(
+                    selector=f"id:{self._light_id}",
+                    color="white",
+                    period=2.0,
+                    cycles=3.0,
+                )
+                return
+            elif effect == "pulse":
+                await self.coordinator.api.pulse_effect(
+                    selector=f"id:{self._light_id}",
+                    color="white",
+                    period=1.0,
+                    cycles=3.0,
+                )
+                return
 
         duration = kwargs.get(ATTR_TRANSITION, 1.0)
         color_str: str | None = None
