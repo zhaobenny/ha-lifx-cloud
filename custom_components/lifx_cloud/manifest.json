@@ -1,0 +1,12 @@
+{
+  "domain": "lifx_cloud",
+  "name": "LIFX Cloud",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/your-username/ha-lifx-cloud",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/your-username/ha-lifx-cloud/issues",
+  "requirements": ["aiohttp>=3.9.0"],
+  "version": "1.0.0"
+}

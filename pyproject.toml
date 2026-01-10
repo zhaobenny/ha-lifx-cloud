@@ -1,0 +1,24 @@
+[project]
+name = "ha-lifx-cloud"
+version = "1.0.0"
+description = "Home Assistant custom integration for LIFX Cloud API"
+requires-python = ">=3.12"
+dependencies = [
+    "aiohttp>=3.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "homeassistant>=2024.1.0",
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "python-dotenv>=1.0.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "homeassistant>=2024.1.0",
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "python-dotenv>=1.0.0",
+]

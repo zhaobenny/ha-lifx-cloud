@@ -1,0 +1,21 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "LIFX Cloud",
+        "description": "Enter your LIFX Cloud API token. You can generate one at https://cloud.lifx.com/settings",
+        "data": {
+          "access_token": "API Token"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid API token",
+      "cannot_connect": "Failed to connect to LIFX Cloud API",
+      "unknown": "Unknown error occurred"
+    },
+    "abort": {
+      "already_configured": "This LIFX Cloud account is already configured"
+    }
+  }
+}
